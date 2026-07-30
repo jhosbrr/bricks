@@ -1,39 +1,24 @@
-BRICKS 2.0 — Brick by brick
+BRICKS 3.0 OFICIAL
 
-Subí estos cinco archivos al repositorio de GitHub Pages:
-- index.html
-- manifest.webmanifest
-- sw.js
-- icon-192.png
-- icon-512.png
+IMPORTANTE
+- Esta versión conserva el mismo localStorage de Bricks 2.x: bricks_v2.
+- Por eso debe recuperar automáticamente tus cuentas, movimientos, pagos y metas anteriores.
+- Subí todos los archivos de esta carpeta a la raíz del repositorio de GitHub Pages, reemplazando los existentes.
 
-Antes de futuras actualizaciones, abrí Bricks > Más > Exportar respaldo.
-Los datos se guardan localmente en Safari y no se suben a GitHub.
+FUNCIONES
+- Inicio y navegación completamente reescritos.
+- Metas: crear, editar, aportar y eliminar.
+- Movimientos: crear, editar y eliminar.
+- Pagos: crear, editar, pagar y eliminar.
+- Registro del ingreso real.
+- Ingresos esperados configurables.
+- Cuentas y saldos editables.
+- Respaldo JSON, importación y CSV.
+- Service Worker nuevo: bricks-v3-0-official.
 
-
-ACTUALIZACIÓN 2.1
-- Ahora podés tocar BAC, BCR o Efectivo para editar el saldo actual.
-- Editar una cuenta ya no crea una cuenta duplicada.
-- El dashboard principal usa un verde salvia claro.
-- Los ingresos programados siguen siendo estimaciones; el depósito real se registra con el botón + como ingreso.
-
-
-ACTUALIZACIÓN 2.2
-- Ahora se pueden eliminar movimientos desde la pantalla Movimientos.
-- Ahora se pueden eliminar pagos pendientes o pagados.
-- Se solicita confirmación antes de borrar.
-- Al borrar un movimiento, el saldo se recalcula automáticamente.
-- Al borrar un pago ya pagado, su movimiento permanece y puede eliminarse aparte.
-- “Construcciones” ahora se llama “Metas”.
-
-
-BRICKS 2.3 OFICIAL
-- Nueva pestaña Metas en la barra inferior.
-- Crear, editar, aportar y eliminar metas.
-- Editar y eliminar movimientos.
-- Editar y eliminar pagos.
-- Ingresos esperados visibles en Inicio.
-- Registrar el monto real recibido para salario, ICODER y voleibol.
-- Presupuesto diario visible en el dashboard.
-- Nuevo diseño verde salvia, más claro y minimalista.
-- Conserva los datos guardados de versiones anteriores.
+ACTUALIZACIÓN EN IPHONE
+1. Reemplazá los archivos del repositorio.
+2. Esperá a que GitHub Pages termine de publicar.
+3. Cerrá Bricks completamente.
+4. Abrila otra vez.
+5. Si siguiera apareciendo la versión vieja, abrí primero la URL en Safari y recargala; luego volvé a abrir el icono instalado.
