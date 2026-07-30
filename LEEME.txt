@@ -30,3 +30,10 @@ BRICKS 3.0.1
 - El dashboard muestra el saldo real y el monto comprometido.
 - Los pagos marcados como pagados dejan de descontarse como pendientes.
 - Al pagar, el gasto generado reduce el saldo de la cuenta, evitando duplicar el descuento.
+
+
+BRICKS 3.1 — INGRESO REAL POR QUINCENA
+- Permite registrar un monto diferente solo para una quincena.
+- No modifica el salario esperado de las próximas quincenas.
+- Guarda el monto esperado y el realmente recibido.
+- Muestra la diferencia en Movimientos e Insights.

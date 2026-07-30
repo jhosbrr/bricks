@@ -305,9 +305,14 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
 <!-- Ingreso real -->
 <div id="actualIncomeModal" class="modal"><div class="sheet">
   <div class="sheetHead"><h3>Registrar ingreso real</h3><button class="close" data-close="actualIncomeModal">×</button></div>
-  <form id="actualIncomeForm"><input id="actualKind" type="hidden">
+  <div class="card" style="margin:12px 0;padding:14px">
+    <strong>Este cambio aplica solo a esta quincena.</strong>
+    <div class="meta">Tu salario esperado seguirá igual para los próximos pagos.</div>
+  </div>
+  <form id="actualIncomeForm"><input id="actualKind" type="hidden"><input id="actualExpected" type="hidden">
     <div class="field"><label>INGRESO</label><input id="actualLabel" readonly></div>
-    <div class="field"><label>MONTO RECIBIDO</label><input id="actualAmount" class="money" type="number" min="0" required></div>
+    <div class="field"><label>ESPERADO</label><input id="actualExpectedLabel" readonly></div>
+    <div class="field"><label>MONTO REALMENTE RECIBIDO</label><input id="actualAmount" class="money" type="number" min="0" required></div>
     <div class="row2"><div class="field"><label>CUENTA</label><select id="actualAccount"></select></div><div class="field"><label>FECHA</label><input id="actualDate" type="date" required></div></div>
     <button class="primary">Registrar ingreso</button>
   </form>
@@ -330,7 +335,7 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
   <div class="sheetHead"><h3>Configuración</h3><button class="close" data-close="settings">×</button></div>
   <div class="card">
     <div class="setting"><div><strong>Fecha de inicio del reto</strong><div id="startLabel" class="meta"></div></div><button class="small" id="changeStartBtn">Cambiar</button></div>
-    <div class="setting"><div><strong>Versión</strong><div class="meta">Bricks 3.0.1</div></div><span class="badge">3.0.1</span></div>
+    <div class="setting"><div><strong>Versión</strong><div class="meta">Bricks 3.1</div></div><span class="badge">3.1</span></div>
   </div>
 </div></div>
 
@@ -394,7 +399,9 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
         category:String(m.category || "Otros"),
         date:/^\d{4}-\d{2}-\d{2}$/.test(m.date) ? m.date : today(),
         need:m.need === "optional" ? "optional" : (m.type === "expense" ? "necessary" : ""),
-        expectedKind:m.expectedKind ? String(m.expectedKind) : ""
+        expectedKind:m.expectedKind ? String(m.expectedKind) : "",
+        expectedAmount:Number(m.expectedAmount)||0,
+        expectedLabel:m.expectedLabel ? String(m.expectedLabel) : ""
       })) : [],
       pays:Array.isArray(x.pays) ? x.pays.map(p=>({
         id:String(p.id || uid()),name:String(p.name || "Pago"),amount:Number(p.amount)||0,
@@ -493,11 +500,14 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
     const sign = m.type==="income" ? "+" : m.type==="expense" ? "−" : "";
     const amountClass = m.type==="income" ? "inc" : m.type==="expense" ? "exp" : "";
     const classification = m.need ? ` · ${m.need==="necessary"?"Necesario":"Opcional"}` : "";
+    const expectedDifference = m.type==="income" && Number(m.expectedAmount)>0
+      ? ` · Esperado ${money(m.expectedAmount)} · Dif. ${(Number(m.amount)-Number(m.expectedAmount))>=0?"+":""}${money(Number(m.amount)-Number(m.expectedAmount))}`
+      : "";
     return `<div class="item">
       <div class="itemIcon">${iconFor(m)}</div>
       <div class="itemMain">
         <div class="itemTitle">${escapeHtml(m.description)}</div>
-        <div class="itemSub">${pretty(m.date)} · ${escapeHtml(a?.name || "Cuenta")}${classification}</div>
+        <div class="itemSub">${pretty(m.date)} · ${escapeHtml(a?.name || "Cuenta")}${classification}${expectedDifference}</div>
       </div>
       <div class="itemSide">
         <div class="amt ${amountClass}">${sign}${money(m.amount)}</div>
@@ -567,7 +577,7 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
 
     $("expectedHome").innerHTML=expectedEntries().map(x=>`<div class="expectedCard">
       <div class="itemIcon">${x.icon}</div><div class="itemMain"><div class="itemTitle">${escapeHtml(x.label)}</div><div class="itemSub">Esperado: ${money(x.amount)}</div></div>
-      <button class="small" data-actual-income="${x.kind}">Registrar</button>
+      <button class="small" data-actual-income="${x.kind}">Registrar real</button>
     </div>`).join("");
 
     const upcoming=data.pays.filter(p=>!p.paid).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
@@ -638,6 +648,13 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
     if(expense) observations.push(`Los gastos opcionales representan ${Math.round(optional/expense*100)}% de tus egresos.`);
     if(top) observations.push(`${top[0]} es tu categoría más alta con ${money(top[1])}.`);
     if(small) observations.push(`Los gastos menores a ₡5.000 acumulan ${money(small)}.`);
+    const registeredIncomeRows=rows.filter(m=>m.type==="income"&&Number(m.expectedAmount)>0);
+    const expectedIncomeTotal=registeredIncomeRows.reduce((s,m)=>s+Number(m.expectedAmount),0);
+    const actualIncomeTotal=registeredIncomeRows.reduce((s,m)=>s+Number(m.amount),0);
+    if(registeredIncomeRows.length){
+      const diff=actualIncomeTotal-expectedIncomeTotal;
+      observations.push(`Ingresos registrados: esperado ${money(expectedIncomeTotal)}, recibido ${money(actualIncomeTotal)}, diferencia ${diff>=0?"+":""}${money(diff)}.`);
+    }
     observations.push(`Tu promedio diario del reto es ${money(expense/elapsed)}.`);
     $("insightList").innerHTML=observations.map(t=>`<div class="item"><div class="itemIcon">✦</div><div class="itemMain"><div class="itemTitle" style="white-space:normal">${escapeHtml(t)}</div></div></div>`).join("");
     const done=daysBetween(data.start,today())>=29;
@@ -732,7 +749,14 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
 
   function openActualIncome(kind){
     const x=expectedEntries().find(e=>e.kind===kind);if(!x)return;
-    fillSelects();$("actualKind").value=kind;$("actualLabel").value=x.label;$("actualAmount").value=Math.round(x.amount);$("actualDate").value=today();openModal("actualIncomeModal");
+    fillSelects();
+    $("actualKind").value=kind;
+    $("actualExpected").value=Math.round(x.amount);
+    $("actualLabel").value=x.label;
+    $("actualExpectedLabel").value=money(x.amount);
+    $("actualAmount").value=Math.round(x.amount);
+    $("actualDate").value=today();
+    openModal("actualIncomeModal");
   }
 
   function openIncomeSettings(){
@@ -800,8 +824,19 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
   });
 
   $("actualIncomeForm").addEventListener("submit",e=>{
-    e.preventDefault();data.moves.push({id:uid(),type:"income",amount:Number($("actualAmount").value),description:$("actualLabel").value,account:$("actualAccount").value,category:"Otros",date:$("actualDate").value,need:"",expectedKind:$("actualKind").value});
-    closeModal("actualIncomeModal");persist("Ingreso real registrado");
+    e.preventDefault();
+    const actual=Number($("actualAmount").value);
+    const expected=Number($("actualExpected").value);
+    data.moves.push({
+      id:uid(),type:"income",amount:actual,description:$("actualLabel").value,
+      account:$("actualAccount").value,category:"Otros",date:$("actualDate").value,need:"",
+      expectedKind:$("actualKind").value,expectedAmount:expected,expectedLabel:$("actualLabel").value
+    });
+    closeModal("actualIncomeModal");
+    const difference=actual-expected;
+    persist(difference===0
+      ?"Ingreso real registrado"
+      :`Ingreso registrado · Diferencia ${difference>0?"+":""}${money(difference)}`);
   });
 
   $("incomeForm").addEventListener("submit",e=>{
