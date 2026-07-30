@@ -1,0 +1,8 @@
+MIS FINANZAS — INSTALACIÓN EN IPHONE
+
+1. Subí todos los archivos de esta carpeta juntos a GitHub Pages, Netlify o Cloudflare Pages.
+2. Abrí el enlace publicado desde Safari.
+3. Tocá Compartir > Agregar a pantalla de inicio.
+4. La información queda guardada en ese iPhone.
+
+Importante: no borres los datos de Safari, porque ahí se conserva el historial.

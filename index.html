@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mis Finanzas">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Mis Finanzas</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--accent:#111827;--success:#0f766e;--danger:#b91c1c;--soft:#eef2f7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+.app{max-width:640px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 16px 24px}
+h1,h2,p{margin:0}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.eyebrow{font-size:13px;color:var(--muted);margin-bottom:4px}.title{font-size:26px;font-weight:700;letter-spacing:-.03em}
+.icon-btn{border:0;background:var(--card);width:42px;height:42px;border-radius:14px;font-size:20px}.hero{background:var(--accent);color:#fff;border-radius:24px;padding:22px;margin-bottom:14px}
+.hero small{opacity:.72;font-size:13px}.hero .value{font-size:38px;font-weight:750;letter-spacing:-.04em;margin:8px 0}.hero .sub{font-size:13px;opacity:.78}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px}
+.metric-label{font-size:13px;color:var(--muted)}.metric-value{font-size:21px;font-weight:700;margin-top:6px}.section{margin-top:20px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.section h2{font-size:18px}
+.text-btn{border:0;background:none;color:var(--muted);font-size:14px}.list{display:flex;flex-direction:column;gap:10px}.item{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;display:flex;align-items:center;gap:12px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}.item-main{flex:1;min-width:0}.item-title{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.amount{font-weight:700}.amount.expense{color:var(--danger)}.amount.income{color:var(--success)}.empty{padding:22px;text-align:center;color:var(--muted);background:var(--card);border:1px dashed var(--border);border-radius:18px}
+.fab{position:fixed;right:20px;bottom:calc(82px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:18px;border:0;background:var(--accent);color:#fff;font-size:30px;box-shadow:0 12px 30px rgba(17,24,39,.22)}
+nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--border);padding:8px 14px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:10;backdrop-filter:blur(16px)}
+.nav-inner{width:min(640px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.nav-btn{border:0;background:none;border-radius:14px;padding:8px 4px;color:var(--muted);font-size:12px}.nav-btn span{display:block;font-size:21px;margin-bottom:3px}.nav-btn.active{background:var(--soft);color:var(--text)}
+.screen{display:none}.screen.active{display:block}.form{display:flex;flex-direction:column;gap:14px}label{font-size:13px;color:var(--muted)}input,select{width:100%;margin-top:6px;border:1px solid var(--border);border-radius:16px;padding:14px;background:var(--card);color:var(--text);font:inherit}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border-radius:15px;padding:4px}.seg button{border:0;background:none;padding:11px;border-radius:12px;font-weight:650}.seg button.active{background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.primary{border:0;background:var(--accent);color:#fff;border-radius:16px;padding:15px;font-weight:700;font-size:16px}.secondary{border:1px solid var(--border);background:var(--card);border-radius:16px;padding:14px;font-weight:650}.danger{color:var(--danger)}
+.row{display:flex;gap:10px}.row>*{flex:1}.pay-check{width:24px;height:24px}.note{font-size:13px;color:var(--muted);line-height:1.45}
+@media(prefers-color-scheme:dark){:root{--bg:#0b0f17;--card:#131a24;--text:#f3f4f6;--muted:#9ca3af;--border:#273244;--accent:#f3f4f6;--soft:#1c2634}.hero{background:#f3f4f6;color:#111827}.fab{background:#f3f4f6;color:#111827}nav{background:rgba(19,26,36,.94)}}
+</style>
+</head>
+<body>
+<div class="app">
+<section id="home" class="screen active">
+<div class="top"><div><div class="eyebrow">Desde hoy</div><h1 class="title">Mis finanzas</h1></div><button class="icon-btn" id="quickAdd">＋</button></div>
+<div class="hero"><small>Disponible hoy</small><div class="value" id="available">₡0</div><div class="sub">Saldo inicial + ingresos − gastos</div></div>
+<div class="grid"><div class="card"><div class="metric-label">Ingresos</div><div class="metric-value" id="incomeTotal">₡0</div></div><div class="card"><div class="metric-label">Gastos</div><div class="metric-value" id="expenseTotal">₡0</div></div></div>
+<div class="section"><div class="section-head"><h2>Pagos pendientes</h2><button class="text-btn" data-go="payments">Ver todos</button></div><div id="pendingPreview" class="list"></div></div>
+<div class="section"><div class="section-head"><h2>Últimos movimientos</h2><button class="text-btn" data-go="history">Historial</button></div><div id="recentList" class="list"></div></div>
+</section>
+
+<section id="add" class="screen">
+<div class="top"><div><div class="eyebrow">Rápido y simple</div><h1 class="title">Registrar</h1></div></div>
+<div class="form card">
+<div class="seg"><button id="expenseBtn" class="active" type="button">Gasto</button><button id="incomeBtn" type="button">Ingreso</button></div>
+<label>Monto<input id="amount" type="number" inputmode="decimal" placeholder="0"></label>
+<label>Descripción<input id="description" placeholder="Ej. Almuerzo, salario, SINPE"></label>
+<label>Categoría<select id="category"><option>Comida</option><option>Transporte</option><option>Celular</option><option>Deudas</option><option>Salidas</option><option>Hogar</option><option>Salario</option><option>Beca</option><option>Voleibol</option><option>Otro</option></select></label>
+<label>Cuenta<select id="account"><option>BAC</option><option>BCR</option><option>Efectivo</option><option>Otra</option></select></label>
+<label>Fecha<input id="date" type="date"></label>
+<button id="saveMovement" class="primary" type="button">Guardar movimiento</button>
+</div></section>
+
+<section id="payments" class="screen">
+<div class="top"><div><div class="eyebrow">Lo importante primero</div><h1 class="title">Pagos</h1></div><button id="addPayment" class="icon-btn">＋</button></div>
+<div id="paymentsList" class="list"></div>
+<div id="paymentForm" class="card section" hidden><div class="form">
+<label>Nombre<input id="paymentName" placeholder="Ej. Celular"></label>
+<label>Monto<input id="paymentAmount" type="number" inputmode="decimal"></label>
+<label>Fecha<input id="paymentDate" type="date"></label>
+<div class="row"><button id="cancelPayment" class="secondary" type="button">Cancelar</button><button id="savePayment" class="primary" type="button">Guardar</button></div>
+</div></div></section>
+
+<section id="history" class="screen">
+<div class="top"><div><div class="eyebrow">Todo en un lugar</div><h1 class="title">Historial</h1></div></div>
+<div class="row" style="margin-bottom:12px"><select id="filterType"><option value="all">Todos</option><option value="expense">Gastos</option><option value="income">Ingresos</option></select><button id="clearAll" class="secondary danger" type="button">Reiniciar</button></div>
+<div id="historyList" class="list"></div>
+<div class="section card"><h2 style="font-size:17px;margin-bottom:12px">Ajustes</h2><label>Saldo inicial<input id="startingBalance" type="number" inputmode="decimal"></label><button id="saveStartingBalance" class="secondary" type="button" style="width:100%;margin-top:12px">Guardar saldo inicial</button><p class="note" style="margin-top:12px">El apartamento no viene incluido por defecto. Registralo solamente si querés verlo en el flujo histórico.</p></div>
+</section>
+</div>
+<button class="fab" id="fab">＋</button>
+<nav><div class="nav-inner"><button class="nav-btn active" data-screen="home"><span>⌂</span>Inicio</button><button class="nav-btn" data-screen="add"><span>＋</span>Registrar</button><button class="nav-btn" data-screen="payments"><span>✓</span>Pagos</button><button class="nav-btn" data-screen="history"><span>≡</span>Historial</button></div></nav>
+<script>
+const KEY='jhostin_finanzas_v1';
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
+const initial={startingBalance:0,movements:[],payments:[{id:uid(),name:'Celular',amount:46000,date:today(),paid:false},{id:uid(),name:'Johan',amount:20000,date:today(),paid:false},{id:uid(),name:'Taty',amount:20000,date:today(),paid:false}]};
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||initial,currentType='expense';
+const $=id=>document.getElementById(id),money=n=>'₡'+Math.round(Number(n)||0).toLocaleString('es-CR'),fmt=s=>new Date(s+'T12:00:00').toLocaleDateString('es-CR',{day:'numeric',month:'short'});
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));$('fab').style.display=id==='home'?'block':'none';scrollTo(0,0)}
+document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>go(b.dataset.screen));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));$('fab').onclick=$('quickAdd').onclick=()=>go('add');
+function totals(){let i=0,e=0;state.movements.forEach(m=>m.type==='income'?i+=m.amount:e+=m.amount);return{income:i,expense:e,available:state.startingBalance+i-e}}
+function movement(m){return `<div class="item"><div class="dot"></div><div class="item-main"><div class="item-title">${esc(m.description||m.category)}</div><div class="item-sub">${m.category} · ${m.account} · ${fmt(m.date)}</div></div><div class="amount ${m.type}">${m.type==='expense'?'−':'+'}${money(m.amount)}</div></div>`}
+function payment(p){return `<div class="item"><input class="pay-check" type="checkbox" data-pay="${p.id}" ${p.paid?'checked':''}><div class="item-main"><div class="item-title">${esc(p.name)}</div><div class="item-sub">${fmt(p.date)}</div></div><div class="amount">${money(p.amount)}</div></div>`}
+function render(){const t=totals();$('available').textContent=money(t.available);$('incomeTotal').textContent=money(t.income);$('expenseTotal').textContent=money(t.expense);$('startingBalance').value=state.startingBalance;
+let r=[...state.movements].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4);$('recentList').innerHTML=r.length?r.map(movement).join(''):'<div class="empty">Todavía no hay movimientos.</div>';
+let p=state.payments.filter(x=>!x.paid).sort((a,b)=>a.date.localeCompare(b.date));$('pendingPreview').innerHTML=p.length?p.slice(0,3).map(payment).join(''):'<div class="empty">No tenés pagos pendientes.</div>';
+$('paymentsList').innerHTML=state.payments.length?state.payments.sort((a,b)=>a.date.localeCompare(b.date)).map(payment).join(''):'<div class="empty">No hay pagos registrados.</div>';renderHistory();
+document.querySelectorAll('[data-pay]').forEach(c=>c.onchange=e=>{let p=state.payments.find(x=>x.id===e.target.dataset.pay);if(p){p.paid=e.target.checked;save()}})}
+function renderHistory(){let f=$('filterType').value,a=[...state.movements].filter(m=>f==='all'||m.type===f).sort((a,b)=>b.date.localeCompare(a.date));$('historyList').innerHTML=a.length?a.map(movement).join(''):'<div class="empty">No hay movimientos en este filtro.</div>'}
+$('filterType').onchange=renderHistory;$('date').value=today();
+function setType(t){currentType=t;$('expenseBtn').classList.toggle('active',t==='expense');$('incomeBtn').classList.toggle('active',t==='income')}
+$('expenseBtn').onclick=()=>setType('expense');$('incomeBtn').onclick=()=>setType('income');
+$('saveMovement').onclick=()=>{let a=Number($('amount').value);if(!a||a<=0)return alert('Ingresá un monto válido.');state.movements.push({id:uid(),type:currentType,amount:a,description:$('description').value.trim(),category:$('category').value,account:$('account').value,date:$('date').value});$('amount').value='';$('description').value='';$('date').value=today();save();go('home')};
+$('addPayment').onclick=()=>{$('paymentForm').hidden=false;$('paymentDate').value=today()};$('cancelPayment').onclick=()=>$('paymentForm').hidden=true;
+$('savePayment').onclick=()=>{let a=Number($('paymentAmount').value),n=$('paymentName').value.trim();if(!n||!a)return alert('Completá nombre y monto.');state.payments.push({id:uid(),name:n,amount:a,date:$('paymentDate').value,paid:false});$('paymentName').value='';$('paymentAmount').value='';$('paymentForm').hidden=true;save()};
+$('saveStartingBalance').onclick=()=>{state.startingBalance=Number($('startingBalance').value)||0;save();alert('Saldo inicial actualizado.')};
+$('clearAll').onclick=()=>{if(confirm('¿Reiniciar todos los movimientos y pagos?')){state={startingBalance:0,movements:[],payments:[]};save();go('home')}};
+render();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
