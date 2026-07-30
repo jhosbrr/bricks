@@ -25,3 +25,15 @@ ACTUALIZACIÓN 2.2
 - Al borrar un movimiento, el saldo se recalcula automáticamente.
 - Al borrar un pago ya pagado, su movimiento permanece y puede eliminarse aparte.
 - “Construcciones” ahora se llama “Metas”.
+
+
+BRICKS 2.3 OFICIAL
+- Nueva pestaña Metas en la barra inferior.
+- Crear, editar, aportar y eliminar metas.
+- Editar y eliminar movimientos.
+- Editar y eliminar pagos.
+- Ingresos esperados visibles en Inicio.
+- Registrar el monto real recibido para salario, ICODER y voleibol.
+- Presupuesto diario visible en el dashboard.
+- Nuevo diseño verde salvia, más claro y minimalista.
+- Conserva los datos guardados de versiones anteriores.
