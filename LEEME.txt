@@ -16,3 +16,12 @@ ACTUALIZACIÓN 2.1
 - Editar una cuenta ya no crea una cuenta duplicada.
 - El dashboard principal usa un verde salvia claro.
 - Los ingresos programados siguen siendo estimaciones; el depósito real se registra con el botón + como ingreso.
+
+
+ACTUALIZACIÓN 2.2
+- Ahora se pueden eliminar movimientos desde la pantalla Movimientos.
+- Ahora se pueden eliminar pagos pendientes o pagados.
+- Se solicita confirmación antes de borrar.
+- Al borrar un movimiento, el saldo se recalcula automáticamente.
+- Al borrar un pago ya pagado, su movimiento permanece y puede eliminarse aparte.
+- “Construcciones” ahora se llama “Metas”.
