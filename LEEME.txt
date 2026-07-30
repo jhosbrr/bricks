@@ -9,3 +9,10 @@ Subí estos cinco archivos al repositorio de GitHub Pages:
 
 Antes de futuras actualizaciones, abrí Bricks > Más > Exportar respaldo.
 Los datos se guardan localmente en Safari y no se suben a GitHub.
+
+
+ACTUALIZACIÓN 2.1
+- Ahora podés tocar BAC, BCR o Efectivo para editar el saldo actual.
+- Editar una cuenta ya no crea una cuenta duplicada.
+- El dashboard principal usa un verde salvia claro.
+- Los ingresos programados siguen siendo estimaciones; el depósito real se registra con el botón + como ingreso.
