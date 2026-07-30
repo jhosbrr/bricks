@@ -1,8 +1,11 @@
-MIS FINANZAS — INSTALACIÓN EN IPHONE
+BRICKS 2.0 — Brick by brick
 
-1. Subí todos los archivos de esta carpeta juntos a GitHub Pages, Netlify o Cloudflare Pages.
-2. Abrí el enlace publicado desde Safari.
-3. Tocá Compartir > Agregar a pantalla de inicio.
-4. La información queda guardada en ese iPhone.
+Subí estos cinco archivos al repositorio de GitHub Pages:
+- index.html
+- manifest.webmanifest
+- sw.js
+- icon-192.png
+- icon-512.png
 
-Importante: no borres los datos de Safari, porque ahí se conserva el historial.
+Antes de futuras actualizaciones, abrí Bricks > Más > Exportar respaldo.
+Los datos se guardan localmente en Safari y no se suben a GitHub.
