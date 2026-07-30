@@ -134,8 +134,9 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
 <main>
 <section id="home" class="page active">
   <div class="hero">
-    <div class="eyebrow">DINERO DISPONIBLE</div>
+    <div class="eyebrow">DINERO DISPONIBLE DESPUÉS DE PAGOS</div>
     <div id="available" class="heroMoney">₡0</div>
+    <div id="availableDetail" style="font-size:12px;opacity:.84;margin-top:-13px;margin-bottom:18px">Saldo ₡0 · Comprometido ₡0</div>
     <div class="heroRow">
       <div>Presupuesto diario<strong id="daily">₡0 / día</strong></div>
       <div style="text-align:right">Próximo ingreso<strong id="nextIncome">—</strong></div>
@@ -329,7 +330,7 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
   <div class="sheetHead"><h3>Configuración</h3><button class="close" data-close="settings">×</button></div>
   <div class="card">
     <div class="setting"><div><strong>Fecha de inicio del reto</strong><div id="startLabel" class="meta"></div></div><button class="small" id="changeStartBtn">Cambiar</button></div>
-    <div class="setting"><div><strong>Versión</strong><div class="meta">Bricks 3.0 Oficial</div></div><span class="badge">3.0</span></div>
+    <div class="setting"><div><strong>Versión</strong><div class="meta">Bricks 3.0.1</div></div><span class="badge">3.0.1</span></div>
   </div>
 </div></div>
 
@@ -448,7 +449,9 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
     return total;
   }
 
-  function totalAvailable(){ return data.accounts.reduce((sum,a)=>sum+balance(a.id),0); }
+  function totalBalance(){ return data.accounts.reduce((sum,a)=>sum+balance(a.id),0); }
+  function pendingPaymentsTotal(){ return data.pays.filter(p=>!p.paid).reduce((sum,p)=>sum+(Number(p.amount)||0),0); }
+  function totalAvailable(){ return totalBalance()-pendingPaymentsTotal(); }
 
   function showError(message){
     const banner = $("errorBanner");
@@ -535,6 +538,7 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
 
   function renderHome(){
     $("available").textContent=money(totalAvailable());
+    $("availableDetail").textContent=`Saldo ${money(totalBalance())} · Comprometido ${money(pendingPaymentsTotal())}`;
     $("accountsHome").innerHTML=data.accounts.slice(0,3).map(a=>`<button class="accountCard" data-edit-account="${a.id}"><span>${escapeHtml(a.name)}</span><strong>${money(balance(a.id))}</strong></button>`).join("");
 
     const next=nextIncomeDate();

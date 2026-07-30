@@ -1,4 +1,4 @@
-const CACHE='bricks-v3-0-official';
+const CACHE='bricks-v3-0-1-available';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));

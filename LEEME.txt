@@ -22,3 +22,11 @@ ACTUALIZACIÓN EN IPHONE
 3. Cerrá Bricks completamente.
 4. Abrila otra vez.
 5. Si siguiera apareciendo la versión vieja, abrí primero la URL en Safari y recargala; luego volvé a abrir el icono instalado.
+
+
+BRICKS 3.0.1
+- Corrige el cálculo de Dinero disponible.
+- Ahora: dinero disponible = saldo total de cuentas - pagos pendientes.
+- El dashboard muestra el saldo real y el monto comprometido.
+- Los pagos marcados como pagados dejan de descontarse como pendientes.
+- Al pagar, el gasto generado reduce el saldo de la cuenta, evitando duplicar el descuento.
