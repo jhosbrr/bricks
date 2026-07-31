@@ -37,3 +37,9 @@ BRICKS 3.1 — INGRESO REAL POR QUINCENA
 - No modifica el salario esperado de las próximas quincenas.
 - Guarda el monto esperado y el realmente recibido.
 - Muestra la diferencia en Movimientos e Insights.
+
+BRICKS 3.2 — PRESUPUESTO DIARIO SEGURO
+- Calcula cuánto podés gastar diariamente hasta el próximo ingreso.
+- Resta primero todos los pagos pendientes.
+- Conserva además una reserva de seguridad del 10%.
+- Se recalcula automáticamente con cada ingreso, gasto o pago.

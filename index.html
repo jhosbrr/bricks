@@ -136,9 +136,9 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
   <div class="hero">
     <div class="eyebrow">DINERO DISPONIBLE DESPUÉS DE PAGOS</div>
     <div id="available" class="heroMoney">₡0</div>
-    <div id="availableDetail" style="font-size:12px;opacity:.84;margin-top:-13px;margin-bottom:18px">Saldo ₡0 · Comprometido ₡0</div>
+    <div id="availableDetail" style="font-size:12px;opacity:.84;margin-top:-13px;margin-bottom:7px">Saldo ₡0 · Comprometido ₡0</div><div id="dailyDetail" style="font-size:12px;opacity:.84;margin-bottom:18px">Reserva de seguridad: ₡0</div>
     <div class="heroRow">
-      <div>Presupuesto diario<strong id="daily">₡0 / día</strong></div>
+      <div>Podés gastar diariamente<strong id="daily">₡0 / día</strong></div>
       <div style="text-align:right">Próximo ingreso<strong id="nextIncome">—</strong></div>
     </div>
   </div>
@@ -201,7 +201,7 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
   <div class="stats">
     <div class="mini"><span>Ingresos del reto</span><strong id="rIncome">₡0</strong></div>
     <div class="mini"><span>Gastos del reto</span><strong id="rExpense">₡0</strong></div>
-    <div class="mini"><span>Promedio diario</span><strong id="avg">₡0</strong></div>
+    <div class="mini"><span>Presupuesto diario seguro</span><strong id="avg">₡0</strong></div>
     <div class="mini"><span>Resultado neto</span><strong id="net">₡0</strong></div>
   </div>
   <div class="section"><div class="card"><div class="sectionTitle"><h2>Lo que Bricks observa</h2></div><div id="insightList" class="list"></div></div></div>
@@ -335,7 +335,7 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
   <div class="sheetHead"><h3>Configuración</h3><button class="close" data-close="settings">×</button></div>
   <div class="card">
     <div class="setting"><div><strong>Fecha de inicio del reto</strong><div id="startLabel" class="meta"></div></div><button class="small" id="changeStartBtn">Cambiar</button></div>
-    <div class="setting"><div><strong>Versión</strong><div class="meta">Bricks 3.1</div></div><span class="badge">3.1</span></div>
+    <div class="setting"><div><strong>Versión</strong><div class="meta">Bricks 3.2</div></div><span class="badge">3.2</span></div>
   </div>
 </div></div>
 
@@ -459,6 +459,12 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
   function totalBalance(){ return data.accounts.reduce((sum,a)=>sum+balance(a.id),0); }
   function pendingPaymentsTotal(){ return data.pays.filter(p=>!p.paid).reduce((sum,p)=>sum+(Number(p.amount)||0),0); }
   function totalAvailable(){ return totalBalance()-pendingPaymentsTotal(); }
+  function daysUntilNextIncome(){
+    const next=nextIncomeDate();
+    return Math.max(1,Math.ceil((next.date-parseDate(today()))/86400000));
+  }
+  function safetyReserve(){ return Math.max(0,totalAvailable())*0.10; }
+  function safeDailyBudget(){ return Math.max(0,(totalAvailable()-safetyReserve())/daysUntilNextIncome()); }
 
   function showError(message){
     const banner = $("errorBanner");
@@ -552,8 +558,9 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
     $("accountsHome").innerHTML=data.accounts.slice(0,3).map(a=>`<button class="accountCard" data-edit-account="${a.id}"><span>${escapeHtml(a.name)}</span><strong>${money(balance(a.id))}</strong></button>`).join("");
 
     const next=nextIncomeDate();
-    const left=Math.max(1,Math.ceil((next.date-parseDate(today()))/86400000));
-    $("daily").textContent=`${money(Math.max(0,totalAvailable())/left)} / día`;
+    const left=daysUntilNextIncome();
+    $("daily").textContent=`${money(safeDailyBudget())} / día`;
+    $("dailyDetail").textContent=`Reserva de seguridad: ${money(safetyReserve())} · ${left} día${left===1?"":"s"} para el próximo ingreso`;
     $("nextIncome").textContent=`${next.label} · ${next.date.toLocaleDateString("es-CR",{day:"numeric",month:"short"})}`;
 
     const elapsed=Math.max(1,Math.min(30,daysBetween(data.start,today())+1));
@@ -569,11 +576,9 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
     const qi=sum("income"),qe=sum("expense"),qn=sum("expense","necessary"),qo=sum("expense","optional");
     $("qIncome").textContent=money(qi);$("qExpense").textContent=money(qe);$("qNeed").textContent=money(qn);$("qOpt").textContent=money(qo);
 
-    $("coach").textContent=qe===0
-      ?"Registrá cada movimiento para conocer tus hábitos reales."
-      : qo>qn
-        ?"Los gastos opcionales están superando los necesarios esta quincena."
-        :`Vas construyendo el hábito: ya registraste ${qMoves.length} movimientos esta quincena.`;
+    $("coach").textContent=totalAvailable()<=0
+      ?"Tu dinero disponible está comprometido. Evitá gastos opcionales hasta el próximo ingreso."
+      :`Para llegar tranquilo al próximo ingreso, tratá de no pasar de ${money(safeDailyBudget())} por día.`;
 
     $("expectedHome").innerHTML=expectedEntries().map(x=>`<div class="expectedCard">
       <div class="itemIcon">${x.icon}</div><div class="itemMain"><div class="itemTitle">${escapeHtml(x.label)}</div><div class="itemSub">Esperado: ${money(x.amount)}</div></div>
@@ -643,7 +648,7 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
     rows.filter(m=>m.type==="expense").forEach(m=>categoryTotals[m.category]=(categoryTotals[m.category]||0)+Number(m.amount));
     const top=Object.entries(categoryTotals).sort((a,b)=>b[1]-a[1])[0];
 
-    $("rIncome").textContent=money(income);$("rExpense").textContent=money(expense);$("avg").textContent=money(expense/elapsed);$("net").textContent=money(income-expense);
+    $("rIncome").textContent=money(income);$("rExpense").textContent=money(expense);$("avg").textContent=money(safeDailyBudget());$("net").textContent=money(income-expense);
     const observations=[];
     if(expense) observations.push(`Los gastos opcionales representan ${Math.round(optional/expense*100)}% de tus egresos.`);
     if(top) observations.push(`${top[0]} es tu categoría más alta con ${money(top[1])}.`);
@@ -655,7 +660,7 @@ input,select{border:1px solid var(--line);background:var(--card);color:var(--tex
       const diff=actualIncomeTotal-expectedIncomeTotal;
       observations.push(`Ingresos registrados: esperado ${money(expectedIncomeTotal)}, recibido ${money(actualIncomeTotal)}, diferencia ${diff>=0?"+":""}${money(diff)}.`);
     }
-    observations.push(`Tu promedio diario del reto es ${money(expense/elapsed)}.`);
+    observations.push(`Podés gastar hasta ${money(safeDailyBudget())} por día y mantener una reserva de seguridad de ${money(safetyReserve())} hasta el próximo ingreso.`);
     $("insightList").innerHTML=observations.map(t=>`<div class="item"><div class="itemIcon">✦</div><div class="itemMain"><div class="itemTitle" style="white-space:normal">${escapeHtml(t)}</div></div></div>`).join("");
     const done=daysBetween(data.start,today())>=29;
     $("reportBtn").disabled=!done;

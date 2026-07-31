@@ -1,4 +1,4 @@
-const CACHE='bricks-v3-1-one-time-income';
+const CACHE='bricks-v3-2-safe-daily-budget';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
